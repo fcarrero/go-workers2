@@ -1,6 +1,6 @@
 package main
 
-import "github.com/digitalocean/go-workers2/cmd"
+import "github.com/fcarrero/go-workers2/cmd"
 
 func main() {
 	cmd.Execute()

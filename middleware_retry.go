@@ -2,6 +2,7 @@ package workers
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"math"
 	"math/rand"
@@ -28,9 +29,10 @@ func retryProcessError(queue string, mgr *Manager, message *Msg, err error) erro
 		message.Set("error_message", fmt.Sprintf("%v", err))
 		retryCount := incrementRetry(message)
 
+		retryOptions, _ := message.Get("retry_options").Map()
 		waitDuration := durationToSecondsWithNanoPrecision(
 			time.Duration(
-				secondsToDelay(retryCount),
+				secondsToDelay(retryCount, retryOptions),
 			) * time.Second,
 		)
 
@@ -114,7 +116,42 @@ func incrementRetry(message *Msg) (retryCount int) {
 	return
 }
 
-func secondsToDelay(count int) int {
-	power := math.Pow(float64(count), 4)
-	return int(power) + 15 + (rand.Intn(30) * (count + 1))
+func secondsToDelay(count int, retryOptions map[string]interface{}) int {
+	exp := float64(4)
+	minDelay := float64(15)
+	//maxDelay := math.Inf(1)
+	maxRand := float64(30)
+	if retryOptions != nil {
+		if v, ok := retryOptions["exp"].(json.Number); ok {
+			if v2, err := v.Float64(); err == nil {
+				exp = v2
+			}
+		}
+		if v, ok := retryOptions["min_delay"].(json.Number); ok {
+			if v2, err := v.Float64(); err == nil {
+				minDelay = v2
+			}
+		}
+		/*
+			if v, ok := retryOptions["max_delay"].(json.Number); ok {
+				if v2, err := v.Float64(); err == nil {
+					maxDelay = v2
+				}
+			}*/
+		if v, ok := retryOptions["max_rand"].(json.Number); ok {
+			if v2, err := v.Float64(); err == nil {
+				maxRand = v2
+			}
+		}
+	}
+
+	randN := 0
+	if maxRand > 0 {
+		randN = rand.Intn(int(maxRand))
+	}
+	//(retry_count ** 4) + 15 + (rand(30) * (retry_count + 1))
+
+	backoffExponential := (math.Pow(float64(count), exp)) + minDelay + (float64((randN) * (count + 1)))
+
+	return int(backoffExponential)
 }

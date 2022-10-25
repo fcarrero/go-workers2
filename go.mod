@@ -1,4 +1,4 @@
-module github.com/digitalocean/go-workers2
+module github.com/fcarrero/go-workers2
 
 require (
 	github.com/bitly/go-simplejson v0.5.0

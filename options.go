@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/digitalocean/go-workers2/storage"
+	"github.com/fcarrero/go-workers2/storage"
 	"github.com/go-redis/redis/v8"
 )
 

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/google/martian/log"
+	"log"
 	"math"
 	"math/rand"
 	"time"
@@ -118,7 +118,6 @@ func incrementRetry(message *Msg) (retryCount int) {
 }
 
 func secondsToDelay(count int, retryOptions map[string]interface{}) int {
-	log.Infof("secondsToDelay", "count", count)
 	exp := float64(4)
 	minDelay := float64(15)
 	maxRand := float64(30)
@@ -147,6 +146,6 @@ func secondsToDelay(count int, retryOptions map[string]interface{}) int {
 	}
 
 	backoffExponential := (math.Pow(float64(count), exp)) + minDelay + (float64((randN) * (count + 1)))
-	log.Infof("secondsToDelay", "backoffExponential", backoffExponential)
+	log.Println("secondsToDelay", "backoffExponential", backoffExponential, "count", count)
 	return int(backoffExponential)
 }

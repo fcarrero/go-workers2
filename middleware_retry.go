@@ -146,6 +146,12 @@ func secondsToDelay(count int, retryOptions map[string]interface{}) int {
 	}
 
 	backoffExponential := (math.Pow(float64(count), exp)) + minDelay + (float64((randN) * (count + 1)))
-	log.Println("secondsToDelay", "backoffExponential", backoffExponential, "count", count)
+	log.Println("secondsToDelay", "backoffExponential",
+		int(backoffExponential),
+		"count", count,
+		"exp", exp,
+		"minDelay", minDelay,
+		"randN", randN,
+	)
 	return int(backoffExponential)
 }

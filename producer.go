@@ -22,11 +22,12 @@ type Producer struct {
 
 // EnqueueData stores data and configuration for new work
 type EnqueueData struct {
-	Queue      string      `json:"queue,omitempty"`
-	Class      string      `json:"class"`
-	Args       interface{} `json:"args"`
-	Jid        string      `json:"jid"`
-	EnqueuedAt float64     `json:"enqueued_at"`
+	Queue        string       `json:"queue,omitempty"`
+	Class        string       `json:"class"`
+	Args         interface{}  `json:"args"`
+	Jid          string       `json:"jid"`
+	EnqueuedAt   float64      `json:"enqueued_at"`
+	RetryOptions RetryOptions `json:"retry_options,omitempty"`
 	EnqueueOptions
 }
 
@@ -100,6 +101,7 @@ func (p *Producer) EnqueueWithOptions(queue, class string, args interface{}, opt
 		Jid:            generateJid(),
 		EnqueuedAt:     now,
 		EnqueueOptions: opts,
+		RetryOptions:   opts.RetryOptions,
 	}
 
 	bytes, err := json.Marshal(data)

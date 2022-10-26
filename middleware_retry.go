@@ -2,7 +2,6 @@ package workers
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"log"
 	"math"
@@ -118,28 +117,30 @@ func incrementRetry(message *Msg) (retryCount int) {
 }
 
 func secondsToDelay(count int, retryOptions map[string]interface{}) int {
+	log.Println("secondsToDelay", retryOptions)
 	exp := float64(4)
 	minDelay := float64(15)
 	maxRand := float64(30)
-	if retryOptions != nil {
-		if v, ok := retryOptions["exp"].(json.Number); ok {
-			if v2, err := v.Float64(); err == nil {
-				exp = v2
+	/*
+		if retryOptions != nil {
+			if v, ok := retryOptions["exp"].(json.Number); ok {
+				if v2, err := v.Float64(); err == nil {
+					exp = v2
+				}
 			}
-		}
-		if v, ok := retryOptions["min_delay"].(json.Number); ok {
-			if v2, err := v.Float64(); err == nil {
-				minDelay = v2
+			if v, ok := retryOptions["min_delay"].(json.Number); ok {
+				if v2, err := v.Float64(); err == nil {
+					minDelay = v2
+				}
 			}
-		}
 
-		if v, ok := retryOptions["max_rand"].(json.Number); ok {
-			if v2, err := v.Float64(); err == nil {
-				maxRand = v2
+			if v, ok := retryOptions["max_rand"].(json.Number); ok {
+				if v2, err := v.Float64(); err == nil {
+					maxRand = v2
+				}
 			}
 		}
-	}
-
+	*/
 	randN := 0
 	if maxRand > 0 {
 		randN = rand.Intn(int(maxRand))

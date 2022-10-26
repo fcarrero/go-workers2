@@ -14,7 +14,6 @@ background workers in [golang](http://golang.org/).
 - well tested
 
 Example usage:
-
 ```go
 package main
 
